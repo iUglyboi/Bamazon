@@ -1,4 +1,4 @@
-require ('console.table');
+// require ('console.table');
 const mysql = require('mysql');
 const inquirer = require('inquirer');
 
@@ -6,8 +6,8 @@ const connection = mysql.createConnection({
 	host: "localhost",
 	port: 3306,
 	user: "root",
-	password: "",
-	database: "Bamazon"
+	password: "Jamaica1998!",
+	database: "bamazon_db"
 });
     connection.query('Select * FROM products', (err,res) =>{
     if (err) console.log(err);
@@ -41,6 +41,42 @@ const quanityCheck = (orderObject) => {
     (err, res) => {
         if (err) console.log(err);
         else if (res.length > 0){
-            if (res[0].stock_quanity > orderObject.quantity) {
-            quanityCheck(orderObject,res[0])
-        }else console.log('Sorry we have to give you a raincheck');
+            if (res[0].stock_quantity > orderObject.quantity) {
+            orderAdded(orderObject,res[0]);
+        }else console.log('Sorry we have to give you a raincheck?');
+    }
+    });
+};
+
+const userPurchased = () => {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'item_id',
+            message: 'Enter product id that you would like to buy today, please!',
+            validate: function (input){
+                if (!isNaN(input) && input.length > 0){
+                    return true;
+                } else{
+                    console.log('You have to put the right item id, please.')
+                    return false;
+               } 
+            }
+        },
+         {
+            type: 'input',
+            name: 'quantity',
+            message: "Please enter how many you would like you to buy.",
+            validate: (input) => {
+                if (!isNaN(input) && input.length > 0){
+                    return true;   
+            } else{
+                console.log('You have to put the a valid amount')
+                return false;
+            }
+        }
+    }
+    ])
+     .then(
+         (validInput) => quanityCheck(validInput)
+    );
