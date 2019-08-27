@@ -1,4 +1,4 @@
-// require ('console.table');
+require ('console.table');
 const mysql = require('mysql');
 const inquirer = require('inquirer');
 
