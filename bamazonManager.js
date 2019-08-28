@@ -13,7 +13,7 @@ const connection = mysql.createConnection({
 	host: "localhost",
 	port: 3306,
 	user: "userDB",
-	password: "",
+	password: "Jamaica1998!",
 	database: "bamazon_db"
 });
 
@@ -76,8 +76,8 @@ const inventoryAdded = () => {
 .then((validInput) => {
     connection.query(`
     UPDATE products 
-            SET stock_quantity = stock_quantity + ${Math.abs(parseInt(validatedInput.quantity))}
-            WHERE item_id = ${validatedInput.itemID}`,
+            SET stock_quantity = stock_quantity + ${Math.abs(parseInt(validInput.quantity))}
+            WHERE item_id = ${validInput.item_id}`,
             (err, res) => {
                 if (err) console.log(err);
                 else console.log(
@@ -98,7 +98,7 @@ const addProduct = () => {
                 if (input.length > 0) {
                     return true;
                 } else {
-                    console.log('\n You must enter a valid product name');
+                    console.log('You must enter a valid product name');
                     return false;
                 } 
             }
@@ -116,6 +116,18 @@ const addProduct = () => {
         },
         {
             type: 'input',
+            name: 'price',
+            message: 'Please insert the price here in this format $(xx.xx)',
+            validate: function(input){
+                if (/^\s*-?[1-9]\d*(\.\d{1,2})?\s*$/.test(input)) return true;
+                else console.log('You must put a valid number.');
+                
+
+            }
+
+        },
+        {
+            type: 'input',
             name: 'stock_quantity',
             message: 'Input the quantity of the new item',
             validate: function(input) {
@@ -130,7 +142,7 @@ const addProduct = () => {
     ]).then((itemAdded) => {
         connection.query(`
         INSERT INTO products (product_name, department_name, price, stock_quantity)
-        VALUES ('${itemAdded.product_name}', '${itemAdded.department_name}', ${parseInt(itemAdded.stock_quantity)});`,
+        VALUES ('${itemAdded.product_name}', '${itemAdded.department_name}', ${parseInt(itemAdded.price)},${parseInt(itemAdded.stock_quantity)});`,
         (err, res) => {
             if (err) console.log(err);
             else console.log('You have added this product into the inventory')

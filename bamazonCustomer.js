@@ -13,7 +13,7 @@ const connection = mysql.createConnection({
     if (err) console.log(err);
     else{
         console.table(res);
-        propmtUserChoice();
+        userPurchased()
     }
 });
 
@@ -21,7 +21,7 @@ const orderAdded = (orderObject, itemQuery) => {
     connection.query(`
     UPDATE products 
     SET stock_quantity = stock_quantity - ${Math.abs(orderObject.quantity)}
-    WHERE item_id = ${orderObject.itemID}`,
+    WHERE item_id = ${orderObject.item_id}`,
     (err, res) => {
         if (err) console.log(err);
         else{
@@ -37,7 +37,7 @@ const orderAdded = (orderObject, itemQuery) => {
 const quanityCheck = (orderObject) => {
     connection.query(`
         SELECT * FROM products
-        WHERE item_id = ${orderObject.itemID}`,
+        WHERE item_id = ${orderObject.item_id}`,
     (err, res) => {
         if (err) console.log(err);
         else if (res.length > 0){
@@ -78,5 +78,5 @@ const userPurchased = () => {
     }
     ])
      .then(
-         (validInput) => quanityCheck(validInput)
-    );
+         validInput => quanityCheck(validInput)
+    )};
